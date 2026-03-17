@@ -1,58 +1,94 @@
-import javafx.geometry.Rectangle2D;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+// Cannonball object fired by the cannon
+public class CannonBall
+{
+   private double x;
+   private double y;
+   private double velocityX;
+   private double velocityY;
+   private double size;
+   private boolean active;
+   private int bounceCooldown;
 
-public class Cannonball {
+   public CannonBall(double size)
+   {
+      this.size = size;
+      active = false;
+      bounceCooldown = 0;
+   }
 
-    private double x, y;
-    private double vx, vy;
+   // Start a new cannonball shot
+   public void fire(double startX, double startY, double velocityX, double velocityY)
+   {
+      x = startX;
+      y = startY;
+      this.velocityX = velocityX;
+      this.velocityY = velocityY;
+      active = true;
+      bounceCooldown = 0;
+   }
 
-    private boolean active = false;
+   // Move the cannonball
+   public void update(double elapsedSeconds)
+   {
+      x += velocityX * elapsedSeconds;
+      y += velocityY * elapsedSeconds;
+   }
 
-    // Draw it as a circle, but collisions use bounding box (square)
-    private final double radius = 8;
+   // Reverse the cannonball direction
+   public void bounceBack()
+   {
+      velocityX = -velocityX;
+      velocityY = -velocityY;
+   }
 
-    public void fireFrom(double startX, double startY, double angleRad, double speed) {
-        this.x = startX;
-        this.y = startY;
-        this.vx = Math.cos(angleRad) * speed;
-        this.vy = Math.sin(angleRad) * speed;
-        this.active = true;
-    }
+   // Check if ball went off screen
+   public boolean isOutsideWindow(double width, double height)
+   {
+      return x + size < 0 || x > width || y + size < 0 || y > height;
+   }
 
-    public void update(double dt) {
-        if (!active) return;
-        x += vx * dt;
-        y += vy * dt;
-    }
+   // Turn off the cannonball
+   public void deactivate()
+   {
+      active = false;
+   }
 
-    public void bounceBack() {
-        vx = -vx;
-        vy = -vy;
-    }
+   public double getX()
+   {
+      return x;
+   }
 
-    public boolean isOffScreen(double w, double h) {
-        // bounding box check
-        return x < -40 || x > w + 40 || y < -40 || y > h + 40;
-    }
+   public double getY()
+   {
+      return y;
+   }
 
-    public Rectangle2D getBounds() {
-        // bounding box around the drawn ball (square)
-        double size = radius * 2;
-        return new Rectangle2D(x - radius, y - radius, size, size);
-    }
+   public double getSize()
+   {
+      return size;
+   }
 
-    public boolean isActive() {
-        return active;
-    }
+   public boolean isActive()
+   {
+      return active;
+   }
 
-    public void deactivate() {
-        active = false;
-    }
+   public int getBounceCooldown()
+   {
+      return bounceCooldown;
+   }
 
-    public void draw(GraphicsContext gc) {
-        if (!active) return;
-        gc.setFill(Color.BLACK);
-        gc.fillOval(x - radius, y - radius, radius * 2, radius * 2);
-    }
+   public void setBounceCooldown(int bounceCooldown)
+   {
+      this.bounceCooldown = bounceCooldown;
+   }
+
+   // Lower cooldown so the ball does not bounce repeatedly right away
+   public void decreaseBounceCooldown()
+   {
+      if (bounceCooldown > 0)
+      {
+         bounceCooldown--;
+      }
+   }
 }

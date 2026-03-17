@@ -1,26 +1,34 @@
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Target extends MovingRect {
+// Target object that can be hit and removed
+public class Target extends MovingObject
+{
+   private boolean alive;
+   private Color color;
 
-    private boolean alive = true;
+   public Target(double x, double y, double width, double height,
+      double speedY, Color color)
+   {
+      super(x, y, width, height, speedY);
+      this.color = color;
+      alive = true;
+   }
 
-    public Target(double x, double y, double w, double h, double vy) {
-        super(x, y, w, h, vy);
-    }
+   // Check if target is still in the game
+   public boolean isAlive()
+   {
+      return alive;
+   }
 
-    public boolean isAlive() {
-        return alive;
-    }
+   // Remove target after it gets hit
+   public void destroy()
+   {
+      alive = false;
+   }
 
-    public void setAlive(boolean alive) {
-        this.alive = alive;
-    }
-
-    @Override
-    public void draw(GraphicsContext gc) {
-        if (!alive) return;
-        gc.setFill(Color.FIREBRICK);
-        gc.fillRect(x, y, w, h);
-    }
+   // Return target color for drawing
+   public Color getColor()
+   {
+      return color;
+   }
 }
